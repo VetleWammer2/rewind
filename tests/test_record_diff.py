@@ -16,11 +16,14 @@ class Tiny(nn.Module):
         return self.fc2(self.act(self.fc1(x)))
 
 
+_MAX_STEPS = 16
+
+
 def _data(steps):
-    # fixed data, no RNG involved
-    x = torch.linspace(-1, 1, steps * 4 * 8).reshape(steps, 4, 8)
-    y = torch.linspace(1, -1, steps * 4 * 4).reshape(steps, 4, 4)
-    return x, y
+    # fixed dataset independent of run length, no RNG involved
+    x = torch.linspace(-1, 1, _MAX_STEPS * 4 * 8).reshape(_MAX_STEPS, 4, 8)
+    y = torch.linspace(1, -1, _MAX_STEPS * 4 * 4).reshape(_MAX_STEPS, 4, 4)
+    return x[:steps], y[:steps]
 
 
 def _train(run_dir, seed, steps=8, perturb_at=None, extra_rng_at=None):
