@@ -1,4 +1,9 @@
-"""Clean-install smoke test for the README's CPU record/diff/show workflow."""
+"""Smoke test for the README workflow: record two runs, diff them, show one.
+
+Run B swaps samples 1 and 2, so the runs diverge at step 1 and the diff has a
+known answer: field batch, cause dataloader. Imports must come from an install,
+not the checkout.
+"""
 
 from __future__ import annotations
 
@@ -16,6 +21,7 @@ from torch import nn
 
 import rewind
 
+# 64-bit digest, so 16 hex characters.
 _DIGEST = re.compile(r"[0-9a-f]{16}")
 
 
@@ -29,6 +35,7 @@ class TinyModel(nn.Module):
 
 
 def _record_run(run_dir: Path, order: tuple[int, ...]) -> None:
+    # One seed, one dataset, no RNG in the loop. Only `order` differs between runs.
     torch.manual_seed(7)
     model = TinyModel()
     optimizer = torch.optim.SGD(model.parameters(), lr=0.05, momentum=0.9)
@@ -135,6 +142,7 @@ def _validate_run(
 def _run_cli(
     executable: str, arguments: list[str], working_directory: Path
 ) -> subprocess.CompletedProcess[str]:
+    # Strip the paths that could resolve rewind from somewhere other than the install.
     environment = os.environ.copy()
     environment.pop("PYTHONPATH", None)
     environment["PYTHONNOUSERSITE"] = "1"
