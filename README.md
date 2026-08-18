@@ -83,11 +83,21 @@ recording.
 Works: recording, `diff` with root-cause classes (config-drift, fp-atomic,
 rng-desync, dataloader, control-flow), instability check, CLI.
 
+CI: Ubuntu CPU matrix on Python 3.10 and 3.14.[^floor] It has not run green yet, see Errata.
+
 Roadmap: async side-stream hashing, NCCL collective schedule capture,
 `rewind replay --step N --rank R` from checkpoints, op-level capture.
 
 Design notes in [docs/design.md](docs/design.md).
 
+## Errata
+
+- The test data was called fixed. It changed with step count. Now sliced from 16.
+- The `test` extra held only pytest. No linter. Ruff is in it now.
+- The CI gate landed and has never executed. A billing lock stopped both jobs.
+
 ## License
 
 MIT
+
+[^floor]: Not chosen. It is what `requires-python` already said.
